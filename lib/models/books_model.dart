@@ -3,8 +3,8 @@ import 'dart:convert';
 
 class BooksData {
   BooksData({
-    required this.kind,
-    required this.totalItems,
+    this.kind,
+    this.totalItems,
     this.items,
   });
 
@@ -294,8 +294,8 @@ class Offer {
 
 class OfferListPrice {
   OfferListPrice({
-    required this.amountInMicros,
-    required this.currencyCode,
+    this.amountInMicros,
+    this.currencyCode,
   });
 
   int? amountInMicros;
@@ -321,10 +321,10 @@ class OfferListPrice {
 
 class SearchInfo {
   SearchInfo({
-    required this.textSnippet,
+    this.textSnippet,
   });
 
-  String textSnippet;
+  String? textSnippet;
 
   factory SearchInfo.fromJson(String str) =>
       SearchInfo.fromMap(json.decode(str));
@@ -472,8 +472,8 @@ class VolumeInfo {
 
 class ImageLinks {
   ImageLinks({
-    required this.smallThumbnail,
-    required this.thumbnail,
+    this.smallThumbnail,
+    this.thumbnail,
   });
 
   String? smallThumbnail;
@@ -556,8 +556,8 @@ class PanelizationSummary {
 
 class ReadingModes {
   ReadingModes({
-    @required this.text,
-    @required this.image,
+    this.text,
+    this.image,
   });
 
   bool? text;

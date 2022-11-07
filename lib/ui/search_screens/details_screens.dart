@@ -1,6 +1,8 @@
 import 'package:flutter/material.dart';
+import 'package:insta_it/models/save_data_model.dart';
 import 'package:url_launcher/url_launcher.dart';
 
+import '../../database/database_helper.dart';
 import '../../models/books_model.dart';
 
 class DetailsScreen extends StatefulWidget {
@@ -32,6 +34,20 @@ class _DetailsScreenState extends State<DetailsScreen> {
         actions: [
           TextButton(
             onPressed: () {
+              SaveDataModel saveDataModel = SaveDataModel(
+                title: widget.itemDetails!.title,
+                authors: widget.itemDetails!.authors,
+                categories: widget.itemDetails!.categories,
+                description: widget.itemDetails!.description!,
+                language: widget.itemDetails!.language,
+                pageCount: widget.itemDetails!.pageCount,
+                publisher: widget.itemDetails!.publisher,
+                publishedDate: widget.itemDetails!.publishedDate,
+                previewLink: widget.itemDetails!.previewLink,
+                imageLinks: widget.itemDetails!.imageLinks,
+              );
+
+              DatabaseHelper.addGiftToCart(saveDataModel);
               // Navigator.push(
               //     context,
               //     MaterialPageRoute(
@@ -168,11 +184,17 @@ class _DetailsScreenState extends State<DetailsScreen> {
               const SizedBox(
                 height: 3,
               ),
-              Text(
-                widget.itemDetails!.categories!.first,
-                style:
-                    const TextStyle(fontSize: 17, fontWeight: FontWeight.w400),
-              ),
+              widget.itemDetails!.categories != null
+                  ? Text(
+                      widget.itemDetails!.categories!.first,
+                      style: const TextStyle(
+                          fontSize: 17, fontWeight: FontWeight.w400),
+                    )
+                  : const Text(
+                      "",
+                      style:
+                          TextStyle(fontSize: 17, fontWeight: FontWeight.w400),
+                    ),
               const SizedBox(
                 height: 6,
               ),

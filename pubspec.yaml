@@ -53,6 +53,7 @@ dependencies:
   flutter_bloc:
   equatable:
   url_launcher:
+  rxdart:
 
 
 dev_dependencies:

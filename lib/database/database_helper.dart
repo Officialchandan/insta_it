@@ -6,6 +6,8 @@ import 'package:path/path.dart';
 import 'package:path_provider/path_provider.dart';
 import 'package:sqflite/sqflite.dart';
 
+import '../models/save_data_model.dart';
+
 class DatabaseHelper extends ChangeNotifier {
   static final DatabaseHelper db = DatabaseHelper.internal();
 
@@ -48,39 +50,26 @@ class DatabaseHelper extends ChangeNotifier {
     }
   }
 
-  static Future<int> addGiftToCart(GiftDataModel giftDataModel) async {
+  static Future<int> addGiftToCart(SaveDataModel saveDataModel) async {
     int id = 0;
     try {
-      giftDataModel.userId =
-          await Utility.getStringPreference(Constant.USER_ID);
-
       final db = await getDatabase();
 
-      bool exist = await checkGiftExist(giftDataModel.id.toString());
-
-      if (exist) {
-        List<Map<String, dynamic>> data = await db.query(DBConstant.CART_TABLE,
-            columns: [DBConstant.QUANTITY],
-            where: DBConstant.GIFT_ID + "= ? AND " + DBConstant.USER_ID + "= ?",
-            whereArgs: [
-              giftDataModel.id.toString(),
-              await Utility.getStringPreference(Constant.USER_ID)
-            ]);
-
-        int q = data.first["quantity"] as int;
-
-        giftDataModel.quantity = giftDataModel.quantity! + q;
-
-        id = await db.update(DBConstant.CART_TABLE, giftDataModel.toMap(),
-            whereArgs: [
-              giftDataModel.id.toString(),
-              await Utility.getStringPreference(Constant.USER_ID)
-            ],
-            where:
-                DBConstant.GIFT_ID + "= ? AND " + DBConstant.USER_ID + "= ?");
-      } else {
-        id = await db.insert(DBConstant.CART_TABLE, giftDataModel.toMap());
-      }
+      // bool exist = await checkGiftExist(saveDataModel.id.toString());
+      //
+      // if (exist) {
+      //   id = await db.update(DBConstant.BOOK_TABLE, saveDataModel.toMap(),
+      //       whereArgs: [
+      //         DBConstant.BOOK_TITLE.toString(),
+      //         DBConstant.BOOK_TITLE
+      //       ],
+      //       where: DBConstant.BOOK_TITLE +
+      //           "= ? AND " +
+      //           DBConstant.BOOK_TITLE +
+      //           "= ?");
+      // } else {
+      id = await db.insert(DBConstant.BOOK_TABLE, saveDataModel.toMap());
+      // }
 
       /**
        * close database
@@ -250,7 +239,7 @@ class DatabaseHelper extends ChangeNotifier {
   //
   //     //String selectQuery = "SELECT  * FROM " + DBConstant.TABLE_ALL_PRODUCT + " WHERE " + DBConstant.ORDER_ID + " = '" + order_id + "' AND " + DBConstant.CUSTOM_PRODUCT_ID + "='" + custom_product_id + "' AND " + DBConstant.IS_OFFER_PRODUCT + "='" + isOfferProduct + "'";
   //     String selectQuery = "SELECT  * FROM " +
-  //         DBConstant.CART_TABLE +
+  //         DBConstant.BOOK_TABLE +
   //         " WHERE " +
   //         DBConstant.GIFT_ID +
   //         " = '" +

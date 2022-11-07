@@ -15,23 +15,20 @@ class ApiReposotory {
 
   Future<BooksData?> getBooksData(
       {required String title, required String queryIn}) async {
-    Response res = await dio.get(
-        'https://www.googleapis.com/books/v1/volumes?q=$queryIn:$title&maxResults=20');
-    print("res-->${res.data}");
-    BooksData itemList = BooksData.fromJson(res.toString());
-    return itemList;
-
-    // try {
-    //
-    // } catch (error, stacktrace) {
-    //   String message = "";
-    //   if (error is DioError) {
-    //     ServerError e = ServerError.withError(error: error);
-    //     message = e.getErrorMessage();
-    //   } else {
-    //     message = "Something Went wrong";
-    //   }
-    //   return BooksData(kind: '', totalItems: 0);
-    // }
+    try {
+      Response res = await dio.get(
+          'https://www.googleapis.com/books/v1/volumes?q=$queryIn:$title&maxResults=20');
+      BooksData itemList = BooksData.fromJson(res.toString());
+      return itemList;
+    } catch (error, stacktrace) {
+      String message = "";
+      if (error is DioError) {
+        ServerError e = ServerError.withError(error: error);
+        message = e.getErrorMessage();
+      } else {
+        message = "Something Went wrong";
+      }
+      return BooksData(kind: '', totalItems: 0);
+    }
   }
 }
