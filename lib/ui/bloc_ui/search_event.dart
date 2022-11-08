@@ -1,4 +1,8 @@
+import 'dart:async';
+
 import 'package:equatable/equatable.dart';
+
+import '../../models/books_model.dart';
 
 class HomeEvent extends Equatable {
   @override
@@ -6,9 +10,11 @@ class HomeEvent extends Equatable {
 }
 
 class SearchEvent extends HomeEvent {
-  SearchEvent();
+  final List<Item> bookItem;
+  final StreamController<List<Item>> searchStream;
+  SearchEvent({required this.searchStream, required this.bookItem});
   @override
-  List<Object> get props => [];
+  List<Object> get props => [bookItem, searchStream];
 }
 
 class ChangeHintTextEvent extends HomeEvent {

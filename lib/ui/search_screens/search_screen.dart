@@ -39,30 +39,27 @@ class _SearchScreenState extends State<SearchScreen>
 
   @override
   void initState() {
+    super.initState();
     subject.stream
         .debounce(
-            (event) => TimerStream(event, const Duration(milliseconds: 700)))
+            (event) => TimerStream(event, const Duration(milliseconds: 1000)))
         .listen((query) async {
       debugPrint("query--->$query");
       booksDataList.clear();
       if (await Network.isConnected()) {
         if (valueByIndex == 0) {
-          booksDataList.clear();
           response = await apiReposotory.getBooksData(
               title: query, queryIn: 'intitle');
         }
         if (valueByIndex == 1) {
-          booksDataList.clear();
           response = await apiReposotory.getBooksData(
               title: query, queryIn: 'inauthor');
         }
         if (valueByIndex == 2) {
-          booksDataList.clear();
           response = await apiReposotory.getBooksData(
               title: query, queryIn: 'inpublisher');
         }
         if (valueByIndex == 3) {
-          booksDataList.clear();
           response = await apiReposotory.getBooksData(
               title: query, queryIn: 'ISBN_10');
         }
@@ -70,15 +67,15 @@ class _SearchScreenState extends State<SearchScreen>
         if (response!.items != null) {
           booksDataList = response!.items!;
           searchStream.sink.add(response!.items!);
-          homeBloc.add(SearchEvent());
+          homeBloc.add(SearchEvent(
+              bookItem: response!.items!, searchStream: searchStream));
         } else {
-          searchStream.sink.addError("Please Check Internet Connection");
+          Utility.myToast(messages: "Please Enter Valid Search");
         }
       } else {
         Utility.myToast(messages: "Check Your Internet Connection");
       }
     });
-    super.initState();
     _tabControllers = TabController(length: 4, vsync: this);
   }
 
@@ -136,7 +133,7 @@ class _SearchScreenState extends State<SearchScreen>
                       return TextField(
                         controller: searchController,
                         onChanged: (value) async {
-                          if (value.isNotEmpty && value.length > 3) {
+                          if (value.isNotEmpty && value.length > 2) {
                             if (valueByIndex == 0) {
                               booksDataList.clear();
                               subject.add(value);
@@ -153,7 +150,8 @@ class _SearchScreenState extends State<SearchScreen>
                               booksDataList.clear();
                               subject.add(value);
                             }
-                            homeBloc.add(SearchEvent());
+                            setState(() {});
+                            // homeBloc.add(SearchEvent());
                             print("HHHHH");
                           }
                         },

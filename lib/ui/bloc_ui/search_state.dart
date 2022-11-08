@@ -1,4 +1,8 @@
+import 'dart:async';
+
 import 'package:equatable/equatable.dart';
+
+import '../../models/books_model.dart';
 
 abstract class HomeState extends Equatable {
   const HomeState();
@@ -13,8 +17,11 @@ class HomeInitialState extends HomeState {
 }
 
 class SearchState extends HomeState {
+  final List<Item> bookItem;
+  final StreamController<List<Item>> searchStream;
+  const SearchState({required this.searchStream, required this.bookItem});
   @override
-  List<Object> get props => [];
+  List<Object> get props => [bookItem, searchStream];
 }
 
 class ChangeHintTextState extends HomeState {

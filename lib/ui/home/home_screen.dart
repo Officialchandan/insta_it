@@ -4,6 +4,9 @@ import 'package:insta_it/ui/home/tab_screen/author_page.dart';
 import 'package:insta_it/ui/home/tab_screen/titile_page.dart';
 import 'package:insta_it/ui/search_screens/search_screen.dart';
 
+import '../../database/database_helper.dart';
+import '../../models/save_data_model.dart';
+
 class HomePage extends StatefulWidget {
   const HomePage({Key? key}) : super(key: key);
 
@@ -14,11 +17,20 @@ class HomePage extends StatefulWidget {
 class _HomePageState extends State<HomePage>
     with SingleTickerProviderStateMixin {
   late TabController _tabControllers;
+  List<SaveDataModel> booksList = [];
+  bool isTrueIcon = false;
 
   @override
   void initState() {
     super.initState();
+    getBookData();
     _tabControllers = TabController(length: 2, vsync: this);
+  }
+
+  getBookData() async {
+    booksList = await DatabaseHelper.getBooks();
+    if (!mounted) return;
+    setState(() {});
   }
 
   @override
@@ -53,9 +65,12 @@ class _HomePageState extends State<HomePage>
                 )),
           ],
           leading: IconButton(
-              onPressed: () {},
-              icon: const Icon(
-                Icons.grid_view_outlined,
+              onPressed: () {
+                isTrueIcon = !isTrueIcon;
+                setState(() {});
+              },
+              icon: Icon(
+                isTrueIcon ? Icons.grid_view_outlined : Icons.list,
                 size: 25,
               )),
           bottom: PreferredSize(
@@ -79,6 +94,10 @@ class _HomePageState extends State<HomePage>
                       color: Colors.white),
                   labelColor: MyAppColor.primaryColor,
                   unselectedLabelColor: Colors.black,
+                  onTap: (value) async {
+                    booksList = await DatabaseHelper.getBooks();
+                    setState(() {});
+                  },
                   tabs: const <Widget>[
                     Tab(
                       child: Text(
@@ -105,9 +124,68 @@ class _HomePageState extends State<HomePage>
         body: TabBarView(
             physics: const NeverScrollableScrollPhysics(),
             controller: _tabControllers,
-            children: const [
-              TitlePage(),
-              AuthorPage(),
+            children: [
+              isTrueIcon
+                  ? booksList.isNotEmpty
+                      ? TitlePage(booksList: booksList)
+                      : contentWidget()
+                  : booksList.isNotEmpty
+                      ? TitlePageForListView(booksList: booksList)
+                      : contentWidget(),
+              isTrueIcon
+                  ? booksList.isNotEmpty
+                      ? TitlePage(booksList: booksList)
+                      : contentWidget()
+                  : booksList.isNotEmpty
+                      ? TitlePageForListView(booksList: booksList)
+                      : contentWidget(),
             ]));
+  }
+
+  Widget contentWidget() {
+    return Container(
+        child: Column(
+      mainAxisSize: MainAxisSize.max,
+      crossAxisAlignment: CrossAxisAlignment.center,
+      mainAxisAlignment: MainAxisAlignment.center,
+      children: [
+        Row(
+          mainAxisAlignment: MainAxisAlignment.center,
+          children: const [
+            Text(
+              "Add book with the ",
+              style: TextStyle(
+                fontSize: 20,
+                fontWeight: FontWeight.w900,
+              ),
+            ),
+            Text(
+              "+",
+              style: TextStyle(
+                fontSize: 30,
+                fontWeight: FontWeight.w900,
+              ),
+            ),
+            Text(
+              " icon to",
+              style: TextStyle(
+                fontSize: 20,
+                fontWeight: FontWeight.w900,
+              ),
+            ),
+          ],
+        ),
+        const SizedBox(
+          height: 6,
+        ),
+        const Text(
+          "your book list",
+          style: TextStyle(
+            fontSize: 20,
+            fontWeight: FontWeight.w900,
+          ),
+        ),
+      ],
+    ));
   }
 }

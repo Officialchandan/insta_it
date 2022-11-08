@@ -7,7 +7,8 @@ class HomeBloc extends Bloc<HomeEvent, HomeState> {
     on<SearchEvent>(
       (event, emit) async {
         print("Hey_Chandan");
-        return emit(SearchState());
+        return emit(SearchState(
+            bookItem: event.bookItem, searchStream: event.searchStream));
       },
     );
     on<ChangeHintTextEvent>(

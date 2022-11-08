@@ -51,14 +51,40 @@ class _ShowDataTileState extends State<ShowDataTile> {
                   return SizedBox(
                     height: h - 350,
                     width: w,
-                    child: const Center(
-                      child: Text(
+                    child: const Center(child: CircularProgressIndicator()),
+                  );
+                }
+                if (snapshot.hasError) {
+                  if (snapshot.error.toString() == "loading") {
+                    return SizedBox(
+                      height: h - 350,
+                      width: w,
+                      child: const Center(child: CircularProgressIndicator()),
+                    );
+                  }
+                  if (snapshot.error.toString() == "Internal Server Error") {
+                    return SizedBox(
+                      height: h - 350,
+                      width: w,
+                      child: const Center(
+                          child: Text(
+                        "Internal Server Error",
+                        style: TextStyle(
+                            fontSize: 20, fontWeight: FontWeight.bold),
+                      )),
+                    );
+                  } else {
+                    return SizedBox(
+                      height: h - 350,
+                      width: w,
+                      child: const Center(
+                          child: Text(
                         "Data Not Found",
                         style: TextStyle(
                             fontSize: 20, fontWeight: FontWeight.bold),
-                      ),
-                    ),
-                  );
+                      )),
+                    );
+                  }
                 }
                 if (snapshot.hasData) {
                   return ListView.separated(
@@ -124,47 +150,7 @@ class _ShowDataTileState extends State<ShowDataTile> {
                         const Divider(thickness: 1.0, color: Colors.grey),
                   );
                 }
-                if (snapshot.hasError) {
-                  if (snapshot.error.toString() == "loading") {
-                    return SizedBox(
-                      height: h - 350,
-                      width: w,
-                      child: const Center(child: CircularProgressIndicator()),
-                    );
-                  }
-                  if (snapshot.error.toString() == "Internal Server Error") {
-                    return SizedBox(
-                      height: h - 350,
-                      width: w,
-                      child: const Center(
-                          child: Text(
-                        "Internal Server Error",
-                        style: TextStyle(
-                            fontSize: 20, fontWeight: FontWeight.bold),
-                      )),
-                    );
-                  } else {
-                    return SizedBox(
-                      height: h - 350,
-                      width: w,
-                      child: const Center(
-                          child: Text(
-                        "Please Search",
-                        style: TextStyle(
-                            fontSize: 20, fontWeight: FontWeight.bold),
-                      )),
-                    );
-                  }
-                }
-                return SizedBox(
-                    height: h - 350,
-                    width: w,
-                    child: const Center(
-                        child: Text(
-                      "Please Search",
-                      style:
-                          TextStyle(fontSize: 20, fontWeight: FontWeight.bold),
-                    )));
+                return Container();
               },
             ),
           ),

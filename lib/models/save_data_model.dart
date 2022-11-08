@@ -9,19 +9,19 @@ class SaveDataModel {
     this.description,
     this.pageCount,
     this.categories,
-    this.imageLinks,
+    this.thumbnail,
     this.language,
     this.previewLink,
   });
 
   String? title;
-  List<String>? authors;
+  String? authors;
   String? publisher;
   String? publishedDate;
   String? description;
-  int? pageCount;
-  List<String>? categories;
-  ImageLinks? imageLinks;
+  String? pageCount;
+  String? categories;
+  String? thumbnail;
   String? language;
   String? previewLink;
 
@@ -32,63 +32,28 @@ class SaveDataModel {
 
   factory SaveDataModel.fromMap(Map<String, dynamic> json) => SaveDataModel(
         title: json["title"] == null ? null : json["title"],
-        authors: json["authors"] == null
-            ? null
-            : List<String>.from(json["authors"].map((x) => x)),
+        authors: json["authors"] == null ? [] : json["authors"],
         publisher: json["publisher"] == null ? null : json["publisher"],
         publishedDate:
             json["publishedDate"] == null ? null : json["publishedDate"],
         description: json["description"] == null ? null : json["description"],
-        pageCount: json["pageCount"] == null ? null : json["pageCount"],
-        categories: json["categories"] == null
-            ? null
-            : List<String>.from(json["categories"].map((x) => x)),
-        imageLinks: json["imageLinks"] == null
-            ? null
-            : ImageLinks.fromMap(json["imageLinks"]),
+        pageCount: json["pageCount"] == null ? '' : json["pageCount"],
+        categories: json["categories"] == null ? [] : json["categories"],
+        thumbnail: json["thumbnail"] == null ? null : json["thumbnail"],
         language: json["language"] == null ? null : json["language"],
         previewLink: json["previewLink"] == null ? null : json["previewLink"],
       );
 
   Map<String, dynamic> toMap() => {
         "title": title == null ? null : title,
-        "authors":
-            authors == null ? null : List<dynamic>.from(authors!.map((x) => x)),
+        "authors": authors == null ? null : authors,
         "publisher": publisher == null ? null : publisher,
         "publishedDate": publishedDate == null ? null : publishedDate,
         "description": description == null ? null : description,
         "pageCount": pageCount == null ? null : pageCount,
-        "categories": categories == null
-            ? null
-            : List<dynamic>.from(categories!.map((x) => x)),
-        "imageLinks": imageLinks == null ? null : imageLinks!.toMap(),
+        "categories": categories == null ? null : categories,
+        "thumbnail": thumbnail == null ? null : thumbnail,
         "language": language == null ? null : language,
         "previewLink": previewLink == null ? null : previewLink,
-      };
-}
-
-class ImageLinksOnSave {
-  ImageLinksOnSave({
-    this.smallThumbnail,
-    this.thumbnail,
-  });
-
-  String? smallThumbnail;
-  String? thumbnail;
-
-  factory ImageLinksOnSave.fromJson(String str) =>
-      ImageLinksOnSave.fromMap(json.decode(str));
-
-  String toJson() => json.encode(toMap());
-
-  factory ImageLinksOnSave.fromMap(Map<String, dynamic> json) =>
-      ImageLinksOnSave(
-        smallThumbnail:
-            json["smallThumbnail"] == null ? null : json["smallThumbnail"],
-        thumbnail: json["thumbnail"] == null ? null : json["thumbnail"],
-      );
-  Map<String, dynamic> toMap() => {
-        "smallThumbnail": smallThumbnail == null ? null : smallThumbnail,
-        "thumbnail": thumbnail == null ? null : thumbnail,
       };
 }

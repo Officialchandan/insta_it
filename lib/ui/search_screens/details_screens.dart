@@ -1,9 +1,13 @@
+import 'dart:typed_data';
+
+import 'package:flutter/cupertino.dart';
 import 'package:flutter/material.dart';
 import 'package:insta_it/models/save_data_model.dart';
 import 'package:url_launcher/url_launcher.dart';
 
 import '../../database/database_helper.dart';
 import '../../models/books_model.dart';
+import '../home/home_screen.dart';
 
 class DetailsScreen extends StatefulWidget {
   final VolumeInfo? itemDetails;
@@ -17,6 +21,13 @@ class _DetailsScreenState extends State<DetailsScreen> {
   void initState() {
     debugPrint("hhI-->${widget.itemDetails}");
     super.initState();
+  }
+
+  Uint8List convertStringToUint8List(String str) {
+    final List<int> codeUnits = str.codeUnits;
+    final Uint8List unit8List = Uint8List.fromList(codeUnits);
+
+    return unit8List;
   }
 
   @override
@@ -33,25 +44,27 @@ class _DetailsScreenState extends State<DetailsScreen> {
         ),
         actions: [
           TextButton(
-            onPressed: () {
+            onPressed: () async {
               SaveDataModel saveDataModel = SaveDataModel(
                 title: widget.itemDetails!.title,
-                authors: widget.itemDetails!.authors,
-                categories: widget.itemDetails!.categories,
+                authors: widget.itemDetails!.authors!.first.toString(),
+                categories: widget.itemDetails!.categories != null
+                    ? widget.itemDetails!.categories!.first.toString()
+                    : "",
                 description: widget.itemDetails!.description!,
                 language: widget.itemDetails!.language,
-                pageCount: widget.itemDetails!.pageCount,
+                pageCount: widget.itemDetails!.pageCount.toString(),
                 publisher: widget.itemDetails!.publisher,
                 publishedDate: widget.itemDetails!.publishedDate,
                 previewLink: widget.itemDetails!.previewLink,
-                imageLinks: widget.itemDetails!.imageLinks,
+                thumbnail: widget.itemDetails!.imageLinks!.thumbnail.toString(),
               );
 
-              DatabaseHelper.addGiftToCart(saveDataModel);
-              // Navigator.push(
-              //     context,
-              //     MaterialPageRoute(
-              //         builder: (context) => const SearchScreen()));
+              int status = await DatabaseHelper.addBookToHome(saveDataModel);
+              if (status != 0) {
+                _showDialog(context);
+              }
+              setState(() {});
             },
             child: const Text(
               "Save",
@@ -233,12 +246,6 @@ class _DetailsScreenState extends State<DetailsScreen> {
               Center(
                 child: TextButton(
                   onPressed: () async {
-                    // Navigator.push(
-                    //     context,
-                    //     MaterialPageRoute(
-                    //         builder: (context) => const SearchScreen()));
-                    debugPrint(
-                        "widget.itemDetails!.previewLink!-->${widget.itemDetails!.previewLink!}");
                     await _launchUrl(url: widget.itemDetails!.previewLink!);
                   },
                   child: const Text(
@@ -255,6 +262,30 @@ class _DetailsScreenState extends State<DetailsScreen> {
           ),
         ),
       ),
+    );
+  }
+
+  _showDialog(BuildContext context) {
+    showDialog(
+      barrierDismissible: false,
+      context: context,
+      builder: (BuildContext context) {
+        return CupertinoAlertDialog(
+          title: const Text(
+            "Book saved successfully",
+            style: TextStyle(fontSize: 17, fontWeight: FontWeight.w400),
+          ),
+          actions: <Widget>[
+            CupertinoDialogAction(
+              child: const Text("OK"),
+              onPressed: () {
+                Navigator.pushReplacement(context,
+                    MaterialPageRoute(builder: (context) => const HomePage()));
+              },
+            ),
+          ],
+        );
+      },
     );
   }
 
